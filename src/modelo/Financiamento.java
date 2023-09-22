@@ -48,6 +48,6 @@ public class Financiamento {
         System.out.println("-------");
         System.out.println("Pagamento mensal: " + this.formatar(this.calcularPagamentoMensal()));
         System.out.println("Total do pagamento: " + this.formatar(this.calcularTotalPagamento()));
-        System.out.println("*************");
+        System.out.println("-------");
     }
 }
