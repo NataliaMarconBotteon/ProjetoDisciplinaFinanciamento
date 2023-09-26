@@ -1,15 +1,16 @@
 package modelo;
 
+import java.io.Serializable;
 import java.text.NumberFormat;
 
-public class Financiamento {
-    private double valorImovel;
-    private int prazoFinanciamento;
-    private double taxaJuros;
+public abstract class Financiamento implements Serializable {
+    protected double valorImovel;
+    protected int prazoFinanciamento;
+    protected double taxaJuros;
 
     public Financiamento(double valorImovel, int prazoFinanciamento, double taxaJuros) {
         this.valorImovel = valorImovel;
-        this.prazoFinanciamento = prazoFinanciamento * 12;
+        this.prazoFinanciamento = prazoFinanciamento;
         this.taxaJuros = taxaJuros;
     }
 
@@ -25,20 +26,20 @@ public class Financiamento {
         return taxaJuros;
     }
 
-    private String formatar(double valor){
+    public double calcularPagamentoMensal() {
+        return (getValorImovel() / (getPrazoFinanciamento() * 12)) * (1 + ((getTaxaJuros() / 100) / 12));
+    }
+
+    public double calcularTotalPagamento() {
+        return calcularPagamentoMensal() * getPrazoFinanciamento() * 12;
+    }
+
+    public String formatar(double valor) {
         NumberFormat formatoMoeda = NumberFormat.getCurrencyInstance();
         return formatoMoeda.format(valor);
     }
 
-    public double calcularPagamentoMensal() {
-        return (valorImovel / prazoFinanciamento) * (1 + (taxaJuros / 12));
-    }
-
-    public double calcularTotalPagamento() {
-        return calcularPagamentoMensal() * prazoFinanciamento;
-    }
-
-    public void imprimir(){
+    public boolean imprimir(){
         System.out.println();
         System.out.println("Dados do Financiamento");
         System.out.println("-------");
@@ -49,5 +50,7 @@ public class Financiamento {
         System.out.println("Pagamento mensal: " + this.formatar(this.calcularPagamentoMensal()));
         System.out.println("Total do pagamento: " + this.formatar(this.calcularTotalPagamento()));
         System.out.println("-------");
+
+        return false;
     }
 }

@@ -1,5 +1,9 @@
+import modelo.Apartamento;
+import modelo.Casa;
 import modelo.Financiamento;
+import modelo.Terreno;
 
+import java.io.*;
 import java.util.ArrayList;
 
 public class Main {
@@ -8,75 +12,82 @@ public class Main {
         ArrayList<Financiamento> listaFinanciamentos = new ArrayList<Financiamento>();
         util.InterfaceUsuario interfaceUsuario = new util.InterfaceUsuario();
 
-        double valorImovel;
-        int prazoFinanciamento;
-        double taxaJuros;
-        double descontoNaParcela;
-        double taxaDecrescente;
+        /* Casa */
+        double valorImovel = interfaceUsuario.pedirValorImovel();
+        int prazoFinanciamento = interfaceUsuario.pedirPrazoFinanciamento();
+        double taxaJuros = interfaceUsuario.pedirTaxaJuros();
 
-        /*
-         * Casa 1
-         * */
-        System.out.println("Financiamento de Casa");
+        Casa casa1 = new Casa(valorImovel, prazoFinanciamento, taxaJuros, 300, 500);
+        listaFinanciamentos.add(casa1);
 
-        valorImovel = interfaceUsuario.pedirValorImovel();
-        prazoFinanciamento = interfaceUsuario.pedirPrazoFinanciamento();
-        taxaJuros = interfaceUsuario.pedirTaxaJuros();
-        descontoNaParcela = interfaceUsuario.pedirDescontoNaParcela();
+        Casa casa2 = new Casa(500000, 10, 10, 100, 200);
+        listaFinanciamentos.add(casa2);
 
-        modelo.FinanciamentoCasa financiamentoCasa1 = new modelo.FinanciamentoCasa(valorImovel, prazoFinanciamento, taxaJuros, descontoNaParcela);
+        /* Apartamento */
+        Apartamento apartamento1 = new Apartamento(500000, 10, 10, 1, 5);
+        listaFinanciamentos.add(apartamento1);
 
-        listaFinanciamentos.add(financiamentoCasa1);
+        Apartamento apartamento2 = new Apartamento(1000000, 10, 5, 2, 10);
+        listaFinanciamentos.add(apartamento2);
 
-        /*
-        * Casa 2
-        * */
-        valorImovel = 10000;
-        prazoFinanciamento = 15;
-        taxaJuros = 1;
-        descontoNaParcela = 99;
+        /* Terreno */
+        Terreno terreno1 = new Terreno(500000, 10, 10, "residencial");
 
-        modelo.FinanciamentoCasa financiamentoCasa2 = new modelo.FinanciamentoCasa(valorImovel, prazoFinanciamento, taxaJuros, descontoNaParcela);
+        listaFinanciamentos.add(terreno1);
 
-        listaFinanciamentos.add(financiamentoCasa2);
+        escreveFinanciamentos(listaFinanciamentos, "financiamento.txt");
+        LeFinanciamentos("financiamento.txt");
+    }
 
-        /*
-         * Apartamento 1
-         * */
-        valorImovel = 1000000;
-        prazoFinanciamento = 1;
-        taxaJuros = 15;
-        taxaDecrescente = 100;
+    private static void escreveFinanciamentos(ArrayList<Financiamento> financiamentos, String filename) {
+        System.out.println("Escrevendo arquivo com financiamentos...");
 
-        modelo.FinanciamentoApartamento financiamentoApartamento1 = new modelo.FinanciamentoApartamento(valorImovel, prazoFinanciamento, taxaJuros, taxaDecrescente);
+        ObjectOutputStream outputStream = null;
 
-        listaFinanciamentos.add(financiamentoApartamento1);
+        try {
+            outputStream = new ObjectOutputStream (new FileOutputStream(filename));
 
-        /*
-         * Apartamento 2
-         * */
-        valorImovel = 3000000;
-        prazoFinanciamento = 1;
-        taxaJuros = 5;
-        taxaDecrescente = 200;
+            for (Financiamento financiamento : financiamentos){
+                outputStream.writeObject(financiamento); // escreve o financiamento serializado
+            }
 
-        modelo.FinanciamentoApartamento financiamentoApartamento2 = new modelo.FinanciamentoApartamento(valorImovel, prazoFinanciamento, taxaJuros, taxaDecrescente);
+            outputStream.flush(); // força dados em buffer a serem gravados
+            outputStream.close(); // fecha arquivo de escrita
 
-        listaFinanciamentos.add(financiamentoApartamento2);
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
 
-        /*
-         * Terreno 2
-         * */
-        valorImovel = 30000;
-        prazoFinanciamento = 10;
-        taxaJuros = 12;
+        System.out.println("Arquivo escrito com sucesso!");
+    }
 
-        modelo.FinanciamentoTerreno financiamentoTerreno1 = new modelo.FinanciamentoTerreno(valorImovel, prazoFinanciamento, taxaJuros);
+    public static void LeFinanciamentos(String filename) {
+        System.out.println("Lendo arquivo com financiamentos...");
 
-        listaFinanciamentos.add(financiamentoTerreno1);
+        ObjectInputStream inputStream = null;
 
-        for (Financiamento item : listaFinanciamentos){
-            item.imprimir();
+        try {
+            inputStream = new ObjectInputStream (new FileInputStream(filename));
+
+            Object obj = null;
+
+            while ((obj = inputStream.readObject()) != null) {1
+                if (obj instanceof Financiamento) // le um objeto genérico
+                    ((Financiamento) obj).imprimir(); // imprime os dados do financiamento
+            }
+
+            inputStream.close();
+
+        } catch (EOFException ex) { // quando EOF (End Of File) é alçancado
+            System.out.println("Arquivo lido com sucesso!");
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 }
