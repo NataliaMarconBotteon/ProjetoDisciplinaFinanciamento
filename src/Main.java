@@ -73,7 +73,7 @@ public class Main {
 
             Object obj = null;
 
-            while ((obj = inputStream.readObject()) != null) {1
+            while ((obj = inputStream.readObject()) != null) {
                 if (obj instanceof Financiamento) // le um objeto genérico
                     ((Financiamento) obj).imprimir(); // imprime os dados do financiamento
             }
