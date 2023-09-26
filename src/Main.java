@@ -36,7 +36,7 @@ public class Main {
         listaFinanciamentos.add(terreno1);
 
         escreveFinanciamentos(listaFinanciamentos, "financiamento.txt");
-        LeFinanciamentos("financiamento.txt");
+        leFinanciamentos("financiamento.txt");
     }
 
     private static void escreveFinanciamentos(ArrayList<Financiamento> financiamentos, String filename) {
@@ -63,7 +63,7 @@ public class Main {
         System.out.println("Arquivo escrito com sucesso!");
     }
 
-    public static void LeFinanciamentos(String filename) {
+    public static void leFinanciamentos(String filename) {
         System.out.println("Lendo arquivo com financiamentos...");
 
         ObjectInputStream inputStream = null;
